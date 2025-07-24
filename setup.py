@@ -24,9 +24,9 @@ setuptools.setup(
         'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
-
         'Software Development :: Libraries',
-        'Database :: Front-Ends',
+
+        'Topic :: Database :: Front-Ends',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Utilities',
 
