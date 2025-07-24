@@ -1,4 +1,7 @@
 from abstractrepo.exceptions import ItemNotFoundException
+from abstractrepo.filter import AttributeSpecification, Operator, AndSpecification, OrSpecification
+from abstractrepo.order import OrderParams, OrderDirection, OrderParam
+from abstractrepo.paging import PagingParams
 
 from tests.fixtures.classes import ExampleNewsRepository, NewsCreateForm, NewsUpdateForm
 
@@ -7,7 +10,7 @@ def test_first_example():
     repo = ExampleNewsRepository()
     assert len(repo.get_list()) == 0
 
-    repo.create(NewsCreateForm('Title 1', 'Text 1'))
+    repo.create(NewsCreateForm(title='Title 1', text='Text 1'))
     assert len(repo.get_list()) == 1
 
     repo.create(NewsCreateForm(title='Title 2', text='Text 2'))
@@ -45,3 +48,62 @@ def test_first_example():
         assert False
     except ItemNotFoundException:
         assert True
+
+
+def test_get_list_example():
+    repo = ExampleNewsRepository()
+    assert len(repo.get_list()) == 0
+
+    repo.create(NewsCreateForm(title='First Topic 1', text='First topic text 1'))
+    repo.create(NewsCreateForm(title='First Topic 2', text='First topic text 2'))
+    repo.create(NewsCreateForm(title='First Topic 3', text='First topix text 3'))
+    repo.create(NewsCreateForm(title='Second Topic 1', text='Second topic text 1'))
+    repo.create(NewsCreateForm(title='Second Topic 2', text='Second topic text 2'))
+    repo.create(NewsCreateForm(title='Second Topic 3', text='Second topic text 3'))
+    repo.create(NewsCreateForm(title='Third Theme 1', text='Third topic text 1'))
+    repo.create(NewsCreateForm(title='Third Theme 2', text='Third topic text 2'))
+    repo.create(NewsCreateForm(title='Third Theme 3', text='Third topic text 3'))
+    assert len(repo.get_list()) == 9
+
+    filter_spec = AttributeSpecification('title', 'First Topic%', Operator.ILIKE)
+    news_list = repo.get_list(filter_spec=filter_spec)
+    assert len(news_list) == 3
+    assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
+
+    filter_spec = AndSpecification(
+        AttributeSpecification('title', '%Topic%', Operator.ILIKE),
+        AttributeSpecification('text', '%1', Operator.ILIKE)
+    )
+    news_list = repo.get_list(filter_spec=filter_spec)
+    assert len(news_list) == 2
+    assert [news.title for news in news_list] == ['First Topic 1', 'Second Topic 1']
+
+    filter_spec = AttributeSpecification('title', '%Topic%', Operator.ILIKE)
+    first_page = PagingParams(3, 0)
+    news_list = repo.get_list(filter_spec=filter_spec, paging_params=first_page)
+    assert len(news_list) == 3
+    assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
+
+    second_page = PagingParams(3, 3)
+    news_list = repo.get_list(filter_spec=filter_spec, paging_params=second_page)
+    assert len(news_list) == 3
+    assert [news.title for news in news_list] == ['Second Topic 1', 'Second Topic 2', 'Second Topic 3']
+
+    order_by_id_desc = OrderParams(OrderParam('id', OrderDirection.DESC))
+    first_page = PagingParams(3, 0)
+    news_list = repo.get_list(filter_spec=filter_spec, order_params=order_by_id_desc, paging_params=first_page)
+    assert len(news_list) == 3
+    assert [news.title for news in news_list] == ['Second Topic 3', 'Second Topic 2', 'Second Topic 1']
+
+    second_page = PagingParams(3, 3)
+    news_list = repo.get_list(filter_spec=filter_spec, order_params=order_by_id_desc, paging_params=second_page)
+    assert len(news_list) == 3
+    assert [news.title for news in news_list] == ['First Topic 3', 'First Topic 2', 'First Topic 1']
+
+    filter_spec = OrSpecification(
+        AttributeSpecification('title', '%Topic%', Operator.ILIKE),
+        AttributeSpecification('text', 'Third topic text 1', Operator.E)
+    )
+    news_list = repo.get_list(filter_spec=filter_spec)
+    assert len(news_list) == 7
+    assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3', 'Second Topic 1', 'Second Topic 2', 'Second Topic 3', 'Third Theme 1']

@@ -4,7 +4,7 @@ from typing import Optional, List
 from abstractrepo.exceptions import ItemNotFoundException
 
 from abstractrepo.filter import SpecificationInterface
-from abstractrepo.order import OrderParams
+from abstractrepo.order import OrderParams, OrderDirection
 from abstractrepo.paging import PagingParams
 from abstractrepo.repo import CrudRepositoryInterface
 
@@ -43,8 +43,12 @@ class NewsRepositoryInterface(CrudRepositoryInterface[News, int, NewsCreateForm,
 
 
 class ExampleNewsRepository(NewsRepositoryInterface):
-    _db: List[News] = []
-    _next_id: int = 1
+    _db: List[News]
+    _next_id: int
+
+    def __init__(self):
+        self._db = []
+        self._next_id = 1
 
     def get_list(
         self,
@@ -52,7 +56,11 @@ class ExampleNewsRepository(NewsRepositoryInterface):
         order_params: Optional[OrderParams] = None,
         paging_params: Optional[PagingParams] = None,
     ) -> List[News]:
-        return self._db.copy()
+        result = self._db.copy()
+        result = self._apply_filter(result, filter_spec)
+        result = self._apply_order(result, order_params)
+        result = self._apply_paging(result, paging_params)
+        return result
 
     def get_item(self, item_id: int) -> News:
         try:
@@ -84,3 +92,31 @@ class ExampleNewsRepository(NewsRepositoryInterface):
         if len(filtered_db) == len(self._db):
             raise ItemNotFoundException(News, item_id)
         self._db = filtered_db
+
+    @staticmethod
+    def _apply_filter(items: List[News], filter_spec: Optional[SpecificationInterface]) -> List[News]:
+        if filter_spec is None:
+            return items
+
+        return list(filter(filter_spec.is_satisfied_by, items))
+
+    @staticmethod
+    def _apply_order(items: List[News], order_params: Optional[OrderParams]) -> List[News]:
+        if order_params is None:
+            return items
+
+        for order_param in reversed(order_params.params):
+            items = sorted(
+                items,
+                key=lambda news: getattr(news, order_param.attribute),
+                reverse=order_param.direction == OrderDirection.DESC,
+            )
+
+        return items
+
+    @staticmethod
+    def _apply_paging(items: List[News], paging_params: Optional[PagingParams]) -> List[News]:
+        if paging_params is None:
+            return items
+
+        return items[paging_params.offset:paging_params.offset+paging_params.limit]
