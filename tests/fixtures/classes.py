@@ -1,7 +1,7 @@
 import abc
-from typing import Optional, List, Callable, Iterable
+from typing import Optional, List
 
-from abstractrepo.filter import SpecificationInterface
+from abstractrepo.filter import SpecificationInterface, AttributeSpecification, Operator
 from abstractrepo.order import OrderParams, OrderDirection
 from abstractrepo.paging import PagingParams
 from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepositoryInterface, TModel
@@ -78,8 +78,8 @@ class ListBasedNewsRepository(
         self._next_id += 1
         return self._next_id
 
-    def _get_id_filter_condition(self, item_id: int) -> Callable[[News], bool]:
-        return lambda news: news.id == item_id
+    def _get_id_filter_specification(self, item_id: int) -> SpecificationInterface:
+        return AttributeSpecification('id', item_id, Operator.E)
 
     @staticmethod
     def _apply_filter(items: List[News], filter_spec: Optional[SpecificationInterface]) -> List[News]:

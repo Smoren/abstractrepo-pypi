@@ -75,7 +75,7 @@ class ListBasedCrudRepositoryInterface(
         return self._find_by_id(item_id)
 
     def exists(self, item_id: TIdValueType) -> bool:
-        return bool(len(list(filter(self._get_id_filter_condition(item_id), self._db))))
+        return bool(len(list(filter(lambda item: self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))))
 
     def create(self, form: TCreateSchema) -> TModel:
         item = self._create_model(form, self._generate_id())
@@ -103,17 +103,17 @@ class ListBasedCrudRepositoryInterface(
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _get_id_filter_condition(self, item_id: TIdValueType) -> Callable[[TModel], bool]:
+    def _get_id_filter_specification(self, item_id: TIdValueType) -> SpecificationInterface:
         raise NotImplementedError()
 
     def _find_by_id(self, item_id: TIdValueType) -> TModel:
         try:
-            return next(filter(self._get_id_filter_condition(item_id), self._db))
+            return next(filter(lambda item: self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))
         except StopIteration:
             raise ItemNotFoundException(self.model_class, item_id)
 
     def _exclude_by_id(self, item_id: TIdValueType) -> TModel:
-        return list(filter(lambda item: not self._get_id_filter_condition(item_id)(item), self._db))
+        return list(filter(lambda item: not self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))
 
     @staticmethod
     def _apply_filter(items: List[TModel], filter_spec: Optional[SpecificationInterface]) -> List[TModel]:
