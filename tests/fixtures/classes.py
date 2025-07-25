@@ -80,31 +80,3 @@ class ListBasedNewsRepository(
 
     def _get_id_filter_specification(self, item_id: int) -> SpecificationInterface[News, bool]:
         return AttributeSpecification('id', item_id, Operator.E)
-
-    @staticmethod
-    def _apply_filter(items: List[News], filter_spec: Optional[SpecificationInterface[News, bool]]) -> List[News]:
-        if filter_spec is None:
-            return items
-
-        return list(filter(filter_spec.is_satisfied_by, items))
-
-    @staticmethod
-    def _apply_order(items: List[News], order_options: Optional[OrderOptions]) -> List[News]:
-        if order_options is None:
-            return items
-
-        for order_param in reversed(order_options.params):
-            items = sorted(
-                items,
-                key=lambda news: getattr(news, order_param.attribute),
-                reverse=order_param.direction == OrderDirection.DESC,
-            )
-
-        return items
-
-    @staticmethod
-    def _apply_paging(items: List[News], paging_options: Optional[PagingOptions]) -> List[News]:
-        if paging_options is None:
-            return items
-
-        return items[paging_options.offset:paging_options.offset + paging_options.limit]
