@@ -73,29 +73,29 @@ class BaseAttributeSpecification(Generic[TModel, TResult], SpecificationInterfac
         self.operator = operator
 
 
-class AndSpecification(BaseAndSpecification[object, bool]):
-    def is_satisfied_by(self, model: object) -> bool:
+class AndSpecification(Generic[TModel], BaseAndSpecification[TModel, bool]):
+    def is_satisfied_by(self, model: TModel) -> bool:
         for specification in self.specifications:
             if not specification.is_satisfied_by(model):
                 return False
         return True
 
 
-class OrSpecification(BaseOrSpecification[object, bool]):
-    def is_satisfied_by(self, model: object) -> bool:
+class OrSpecification(Generic[TModel], BaseOrSpecification[TModel, bool]):
+    def is_satisfied_by(self, model: TModel) -> bool:
         for specification in self.specifications:
             if specification.is_satisfied_by(model):
                 return True
         return False
 
 
-class NotSpecification(BaseNotSpecification[object, bool]):
-    def is_satisfied_by(self, model: object) -> bool:
+class NotSpecification(Generic[TModel], BaseNotSpecification[TModel, bool]):
+    def is_satisfied_by(self, model: TModel) -> bool:
         return not self.specification.is_satisfied_by(model)
 
 
-class AttributeSpecification(BaseAttributeSpecification[object, bool]):
-    def is_satisfied_by(self, model: object) -> bool:
+class AttributeSpecification(Generic[TModel], BaseAttributeSpecification[TModel, bool]):
+    def is_satisfied_by(self, model: TModel) -> bool:
         model_attr = getattr(model, self.attribute_name)
 
         if model_attr is None and self.attribute_value is not None:
@@ -118,9 +118,9 @@ class AttributeSpecification(BaseAttributeSpecification[object, bool]):
         if self.operator == Operator.LTE:
             return model_attr <= self.attribute_value
         if self.operator == Operator.LIKE:
-            return self.like(str(self.attribute_value), model_attr)
+            return self._like(str(self.attribute_value), model_attr)
         if self.operator == Operator.ILIKE:
-            return self.like(str(self.attribute_value).lower(), model_attr.lower())
+            return self._like(str(self.attribute_value).lower(), model_attr.lower())
         if self.operator == Operator.IN:
             if isinstance(self.attribute_value, list):
                 return model_attr in self.attribute_value
@@ -132,10 +132,10 @@ class AttributeSpecification(BaseAttributeSpecification[object, bool]):
         raise NotImplementedError(f'Unsupported operator: {self.operator}')
 
     @staticmethod
-    def like(pattern: str, string: str) -> bool:
-        # Заменить SQL шаблоны (%) и (_) на соответствующие регулярным выражениям
+    def _like(pattern: str, string: str) -> bool:
+        # Replace SQL pattern wildcards (%) and (_) with regex equivalents
         pattern = pattern.replace('%', '.*').replace('_', '.')
-        # Добавить начало и конец строки
+        # Add start and end of string
         pattern = '^' + pattern + '$'
-        # Проверить, соответствует ли строка шаблону
+        # Check if the string matches the pattern
         return re.match(pattern, string) is not None

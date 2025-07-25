@@ -1,11 +1,11 @@
-from typing import List, TypeVar, Generic, Optional, Callable, Iterable
+from typing import List, TypeVar, Generic, Optional, Iterable
 import abc
 
 from abstractrepo.exceptions import ItemNotFoundException
 
-from abstractrepo.order import OrderParams, OrderDirection
-from abstractrepo.paging import PagingParams
-from abstractrepo.filter import SpecificationInterface
+from abstractrepo.order import OrderOptions, OrderDirection
+from abstractrepo.paging import PagingOptions
+from abstractrepo.specification import SpecificationInterface
 
 TModel = TypeVar('TModel')
 TIdValueType = TypeVar('TIdValueType')
@@ -17,9 +17,9 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
     @abc.abstractmethod
     def get_list(
         self,
-        filter_spec: Optional[SpecificationInterface] = None,
-        order_params: Optional[OrderParams] = None,
-        paging_params: Optional[PagingParams] = None,
+        filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
+        order_options: Optional[OrderOptions] = None,
+        paging_options: Optional[PagingOptions] = None,
     ) -> Iterable[TModel]:
         raise NotImplementedError()
 
@@ -61,14 +61,14 @@ class ListBasedCrudRepositoryInterface(
 
     def get_list(
         self,
-        filter_spec: Optional[SpecificationInterface] = None,
-        order_params: Optional[OrderParams] = None,
-        paging_params: Optional[PagingParams] = None,
+        filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
+        order_options: Optional[OrderOptions] = None,
+        paging_options: Optional[PagingOptions] = None,
     ) -> Iterable[TModel]:
         result = self._db.copy()
         result = self._apply_filter(result, filter_spec)
-        result = self._apply_order(result, order_params)
-        result = self._apply_paging(result, paging_params)
+        result = self._apply_order(result, order_options)
+        result = self._apply_paging(result, paging_options)
         return result
 
     def get_item(self, item_id: TIdValueType) -> TModel:
@@ -103,7 +103,7 @@ class ListBasedCrudRepositoryInterface(
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _get_id_filter_specification(self, item_id: TIdValueType) -> SpecificationInterface:
+    def _get_id_filter_specification(self, item_id: TIdValueType) -> SpecificationInterface[TModel, bool]:
         raise NotImplementedError()
 
     def _find_by_id(self, item_id: TIdValueType) -> TModel:
@@ -116,29 +116,29 @@ class ListBasedCrudRepositoryInterface(
         return list(filter(lambda item: not self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))
 
     @staticmethod
-    def _apply_filter(items: List[TModel], filter_spec: Optional[SpecificationInterface]) -> List[TModel]:
+    def _apply_filter(items: List[TModel], filter_spec: Optional[SpecificationInterface[TModel, bool]]) -> List[TModel]:
         if filter_spec is None:
             return items
 
         return list(filter(filter_spec.is_satisfied_by, items))
 
     @staticmethod
-    def _apply_order(items: List[TModel], order_params: Optional[OrderParams]) -> List[TModel]:
-        if order_params is None:
+    def _apply_order(items: List[TModel], order_options: Optional[OrderOptions]) -> List[TModel]:
+        if order_options is None:
             return items
 
-        for order_param in reversed(order_params.params):
+        for option in reversed(order_options.params):
             items = sorted(
                 items,
-                key=lambda item: getattr(item, order_param.attribute),
-                reverse=order_param.direction == OrderDirection.DESC,
+                key=lambda item: getattr(item, option.attribute),
+                reverse=option.direction == OrderDirection.DESC,
             )
 
         return items
 
     @staticmethod
-    def _apply_paging(items: List[TModel], paging_params: Optional[PagingParams]) -> List[TModel]:
-        if paging_params is None:
+    def _apply_paging(items: List[TModel], paging_options: Optional[PagingOptions]) -> List[TModel]:
+        if paging_options is None:
             return items
 
-        return items[paging_params.offset:paging_params.offset+paging_params.limit]
+        return items[paging_options.offset:paging_options.offset + paging_options.limit]

@@ -8,7 +8,7 @@ class OrderDirection(Enum):
     DESC = 'DESC'
 
 
-class OrderParam:
+class OrderOption:
     attribute: str
     direction: OrderDirection = OrderDirection.ASC
 
@@ -17,33 +17,33 @@ class OrderParam:
         self.direction = direction
 
 
-class OrderParams:
-    params: List[OrderParam]
+class OrderOptions:
+    params: List[OrderOption]
 
-    def __init__(self, *params: OrderParam):
+    def __init__(self, *params: OrderOption):
         self.params = list(params)
 
 
-class OrderParamsBuilder:
-    _params: List[OrderParam]
+class OrderOptionsBuilder:
+    _params: List[OrderOption]
 
     def __init__(self):
         self._params = []
 
-    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC) -> "OrderParamsBuilder":
-        self._params.append(OrderParam(attribute, direction))
+    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC) -> "OrderOptionsBuilder":
+        self._params.append(OrderOption(attribute, direction))
         return self
 
-    def add_mass(self, *items: Tuple[str, OrderDirection]) -> "OrderParamsBuilder":
+    def add_mass(self, *items: Tuple[str, OrderDirection]) -> "OrderOptionsBuilder":
         for item in items:
             self.add(*item)
         return self
 
-    def build(self) -> OrderParams:
-        return OrderParams(*self._params)
+    def build(self) -> OrderOptions:
+        return OrderOptions(*self._params)
 
 
-class OrderParamsConverterInterface(abc.ABC):
+class OrderOptionsConverterInterface(abc.ABC):
     @abc.abstractmethod
-    def convert(self, order: OrderParams) -> OrderParams:
+    def convert(self, order: OrderOptions) -> OrderOptions:
         raise NotImplementedError()

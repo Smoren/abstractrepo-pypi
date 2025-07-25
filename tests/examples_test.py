@@ -1,7 +1,7 @@
 from abstractrepo.exceptions import ItemNotFoundException
-from abstractrepo.filter import AttributeSpecification, Operator, AndSpecification, OrSpecification
-from abstractrepo.order import OrderParams, OrderDirection, OrderParam
-from abstractrepo.paging import PagingParams
+from abstractrepo.specification import Operator, AttributeSpecification, AndSpecification, OrSpecification
+from abstractrepo.order import OrderDirection, OrderOptionsBuilder
+from abstractrepo.paging import PagingOptions
 
 from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm
 
@@ -82,24 +82,24 @@ def test_get_list_example():
     assert [news.title for news in news_list] == ['First Topic 1', 'Second Topic 1']
 
     filter_spec = AttributeSpecification('title', '%Topic%', Operator.ILIKE)
-    first_page = PagingParams(3, 0)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_params=first_page)
+    first_page = PagingOptions(3, 0)
+    news_list = repo.get_list(filter_spec=filter_spec, paging_options=first_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
 
-    second_page = PagingParams(3, 3)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_params=second_page)
+    second_page = PagingOptions(3, 3)
+    news_list = repo.get_list(filter_spec=filter_spec, paging_options=second_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 1', 'Second Topic 2', 'Second Topic 3']
 
-    order_by_id_desc = OrderParams(OrderParam('id', OrderDirection.DESC))
-    first_page = PagingParams(3, 0)
-    news_list = repo.get_list(filter_spec=filter_spec, order_params=order_by_id_desc, paging_params=first_page)
+    order_by_id_desc = OrderOptionsBuilder().add('id', OrderDirection.DESC).build()
+    first_page = PagingOptions(3, 0)
+    news_list = repo.get_list(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=first_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 3', 'Second Topic 2', 'Second Topic 1']
 
-    second_page = PagingParams(3, 3)
-    news_list = repo.get_list(filter_spec=filter_spec, order_params=order_by_id_desc, paging_params=second_page)
+    second_page = PagingOptions(3, 3)
+    news_list = repo.get_list(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=second_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 3', 'First Topic 2', 'First Topic 1']
 

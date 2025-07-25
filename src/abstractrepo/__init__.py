@@ -1,7 +1,7 @@
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 import abstractrepo.repo
-import abstractrepo.filter
+import abstractrepo.specification
 import abstractrepo.order
 import abstractrepo.paging
 import abstractrepo.exceptions
