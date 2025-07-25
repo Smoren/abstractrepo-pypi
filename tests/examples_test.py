@@ -3,21 +3,24 @@ from abstractrepo.filter import AttributeSpecification, Operator, AndSpecificati
 from abstractrepo.order import OrderParams, OrderDirection, OrderParam
 from abstractrepo.paging import PagingParams
 
-from tests.fixtures.classes import ExampleNewsRepository, NewsCreateForm, NewsUpdateForm
+from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm
 
 
 def test_first_example():
-    repo = ExampleNewsRepository()
+    repo = ListBasedNewsRepository()
     assert len(repo.get_list()) == 0
 
-    repo.create(NewsCreateForm(title='Title 1', text='Text 1'))
+    model = repo.create(NewsCreateForm(title='Title 1', text='Text 1'))
     assert len(repo.get_list()) == 1
+    assert repo.exists(model.id)
 
-    repo.create(NewsCreateForm(title='Title 2', text='Text 2'))
+    model = repo.create(NewsCreateForm(title='Title 2', text='Text 2'))
     assert len(repo.get_list()) == 2
+    assert repo.exists(model.id)
 
-    repo.create(NewsCreateForm(title='Title 3', text='Text 3'))
+    model = repo.create(NewsCreateForm(title='Title 3', text='Text 3'))
     assert len(repo.get_list()) == 3
+    assert repo.exists(model.id)
 
     news = repo.get_item(2)
     assert news.title == 'Title 2'
@@ -51,7 +54,7 @@ def test_first_example():
 
 
 def test_get_list_example():
-    repo = ExampleNewsRepository()
+    repo = ListBasedNewsRepository()
     assert len(repo.get_list()) == 0
 
     repo.create(NewsCreateForm(title='First Topic 1', text='First topic text 1'))
@@ -107,3 +110,8 @@ def test_get_list_example():
     news_list = repo.get_list(filter_spec=filter_spec)
     assert len(news_list) == 7
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3', 'Second Topic 1', 'Second Topic 2', 'Second Topic 3', 'Third Theme 1']
+
+    filter_spec = AttributeSpecification('id', [1, 2], Operator.IN)
+    news_list = repo.get_list(filter_spec=filter_spec)
+    assert len(news_list) == 2
+    assert [news.id for news in news_list] == [1, 2]

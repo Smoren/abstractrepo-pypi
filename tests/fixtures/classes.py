@@ -1,12 +1,10 @@
 import abc
-from typing import Optional, List
-
-from abstractrepo.exceptions import ItemNotFoundException
+from typing import Optional, List, Callable, Iterable
 
 from abstractrepo.filter import SpecificationInterface
 from abstractrepo.order import OrderParams, OrderDirection
 from abstractrepo.paging import PagingParams
-from abstractrepo.repo import CrudRepositoryInterface
+from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepositoryInterface, TModel
 
 
 class News:
@@ -42,13 +40,15 @@ class NewsRepositoryInterface(CrudRepositoryInterface[News, int, NewsCreateForm,
     pass
 
 
-class ExampleNewsRepository(NewsRepositoryInterface):
-    _db: List[News]
+class ListBasedNewsRepository(
+    ListBasedCrudRepositoryInterface[News, int, NewsCreateForm, NewsUpdateForm],
+    NewsRepositoryInterface,
+):
     _next_id: int
 
     def __init__(self):
-        self._db = []
-        self._next_id = 1
+        super().__init__()
+        self._next_id = 0
 
     def get_list(
         self,
@@ -56,42 +56,30 @@ class ExampleNewsRepository(NewsRepositoryInterface):
         order_params: Optional[OrderParams] = None,
         paging_params: Optional[PagingParams] = None,
     ) -> List[News]:
-        result = self._db.copy()
-        result = self._apply_filter(result, filter_spec)
-        result = self._apply_order(result, order_params)
-        result = self._apply_paging(result, paging_params)
-        return result
+        return list(super().get_list(filter_spec=filter_spec, order_params=order_params, paging_params=paging_params))
 
-    def get_item(self, item_id: int) -> News:
-        try:
-            return next(filter(lambda news: news.id == item_id, self._db))
-        except StopIteration:
-            raise ItemNotFoundException(News, item_id)
+    @property
+    def model_class(self) -> TModel:
+        return News
 
-    def create(self, form: NewsCreateForm) -> News:
-        new_news = News(
-            id=self._next_id,
+    def _create_model(self, form: NewsCreateForm, new_id: int) -> News:
+        return News(
+            id=new_id,
             title=form.title,
             text=form.text
         )
-        self._db.append(new_news)
+
+    def _update_model(self, model: News, form: NewsUpdateForm) -> News:
+        model.title = form.title
+        model.text = form.text
+        return model
+
+    def _generate_id(self) -> int:
         self._next_id += 1
-        return new_news
+        return self._next_id
 
-    def update(self, item_id: int, form: NewsUpdateForm) -> News:
-        try:
-            news = next(filter(lambda news: news.id == item_id, self._db))
-            news.title = form.title
-            news.text = form.text
-            return news
-        except StopIteration:
-            raise ItemNotFoundException(News, item_id)
-
-    def delete(self, item_id: int) -> News:
-        filtered_db = list(filter(lambda news: news.id != item_id, self._db))
-        if len(filtered_db) == len(self._db):
-            raise ItemNotFoundException(News, item_id)
-        self._db = filtered_db
+    def _get_id_filter_condition(self, item_id: int) -> Callable[[News], bool]:
+        return lambda news: news.id == item_id
 
     @staticmethod
     def _apply_filter(items: List[News], filter_spec: Optional[SpecificationInterface]) -> List[News]:
