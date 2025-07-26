@@ -49,7 +49,7 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
         raise NotImplementedError()
 
 
-class ListBasedCrudRepositoryInterface(
+class ListBasedCrudRepository(
     Generic[TModel, TIdValueType, TCreateSchema, TUpdateSchema],
     CrudRepositoryInterface[TModel, TIdValueType, TCreateSchema, TUpdateSchema],
     abc.ABC,

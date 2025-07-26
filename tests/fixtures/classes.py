@@ -4,7 +4,7 @@ from typing import Optional, List, Union, Type
 from abstractrepo.specification import SpecificationInterface, Operator, AttributeSpecification
 from abstractrepo.order import OrderOptions
 from abstractrepo.paging import PagingOptions
-from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepositoryInterface
+from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepository
 
 
 class News:
@@ -41,7 +41,7 @@ class NewsRepositoryInterface(CrudRepositoryInterface[News, int, NewsCreateForm,
 
 
 class ListBasedNewsRepository(
-    ListBasedCrudRepositoryInterface[News, int, NewsCreateForm, NewsUpdateForm],
+    ListBasedCrudRepository[News, int, NewsCreateForm, NewsUpdateForm],
     NewsRepositoryInterface,
 ):
     _next_id: int
