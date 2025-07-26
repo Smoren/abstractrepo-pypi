@@ -1,4 +1,4 @@
-from typing import List, TypeVar, Generic, Optional, Iterable
+from typing import List, TypeVar, Generic, Optional, Iterable, Type
 import abc
 
 from abstractrepo.exceptions import ItemNotFoundException
@@ -45,7 +45,7 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
 
     @property
     @abc.abstractmethod
-    def model_class(self) -> type[TModel]:
+    def model_class(self) -> Type[TModel]:
         raise NotImplementedError()
 
 

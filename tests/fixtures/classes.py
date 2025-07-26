@@ -1,5 +1,5 @@
 import abc
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Type
 
 from abstractrepo.specification import SpecificationInterface, Operator, AttributeSpecification
 from abstractrepo.order import OrderOptions
@@ -59,7 +59,7 @@ class ListBasedNewsRepository(
         return list(super().get_list(filter_spec=filter_spec, order_options=order_options, paging_options=paging_options))
 
     @property
-    def model_class(self) -> type[News]:
+    def model_class(self) -> Type[News]:
         return News
 
     def _create_model(self, form: NewsCreateForm, new_id: int) -> News:
