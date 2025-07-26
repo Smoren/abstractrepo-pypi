@@ -8,18 +8,18 @@ from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, News
 
 def test_first_example():
     repo = ListBasedNewsRepository()
-    assert len(repo.get_list()) == 0
+    assert len(repo.get_collection()) == 0
 
     model = repo.create(NewsCreateForm(title='Title 1', text='Text 1'))
-    assert len(repo.get_list()) == 1
+    assert len(repo.get_collection()) == 1
     assert repo.exists(model.id)
 
     model = repo.create(NewsCreateForm(title='Title 2', text='Text 2'))
-    assert len(repo.get_list()) == 2
+    assert len(repo.get_collection()) == 2
     assert repo.exists(model.id)
 
     model = repo.create(NewsCreateForm(title='Title 3', text='Text 3'))
-    assert len(repo.get_list()) == 3
+    assert len(repo.get_collection()) == 3
     assert repo.exists(model.id)
 
     news = repo.get_item(2)
@@ -32,7 +32,7 @@ def test_first_example():
     assert news.text == 'Text 2 updated'
 
     repo.delete(2)
-    assert len(repo.get_list()) == 2
+    assert len(repo.get_collection()) == 2
 
     try:
         repo.get_item(2)
@@ -55,7 +55,7 @@ def test_first_example():
 
 def test_get_list_example():
     repo = ListBasedNewsRepository()
-    assert len(repo.get_list()) == 0
+    assert len(repo.get_collection()) == 0
 
     repo.create(NewsCreateForm(title='First Topic 1', text='First topic text 1'))
     repo.create(NewsCreateForm(title='First Topic 2', text='First topic text 2'))
@@ -66,10 +66,10 @@ def test_get_list_example():
     repo.create(NewsCreateForm(title='Third Theme 1', text='Third topic text 1'))
     repo.create(NewsCreateForm(title='Third Theme 2', text='Third topic text 2'))
     repo.create(NewsCreateForm(title='Third Theme 3', text='Third topic text 3'))
-    assert len(repo.get_list()) == 9
+    assert len(repo.get_collection()) == 9
 
     filter_spec = AttributeSpecification('title', 'First Topic%', Operator.ILIKE)
-    news_list = repo.get_list(filter_spec=filter_spec)
+    news_list = repo.get_collection(filter_spec=filter_spec)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
 
@@ -77,40 +77,40 @@ def test_get_list_example():
         AttributeSpecification('title', '%Topic%', Operator.ILIKE),
         AttributeSpecification('text', '%1', Operator.ILIKE)
     )
-    news_list = repo.get_list(filter_spec=filter_spec)
+    news_list = repo.get_collection(filter_spec=filter_spec)
     assert len(news_list) == 2
     assert [news.title for news in news_list] == ['First Topic 1', 'Second Topic 1']
 
     filter_spec = AttributeSpecification('title', '%Topic%', Operator.ILIKE)
     first_page = PagingOptions(3, 0)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_options=first_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, paging_options=first_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
 
     second_page = PagingOptions(3, 3)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_options=second_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, paging_options=second_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 1', 'Second Topic 2', 'Second Topic 3']
 
     paginator = Paginator(page_size=3, start_page=1)
     first_page = paginator.get_page(1)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_options=first_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, paging_options=first_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3']
 
     second_page = paginator.get_page(2)
-    news_list = repo.get_list(filter_spec=filter_spec, paging_options=second_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, paging_options=second_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 1', 'Second Topic 2', 'Second Topic 3']
 
     order_by_id_desc = OrderOptionsBuilder().add('id', OrderDirection.DESC).build()
     first_page = PagingOptions(3, 0)
-    news_list = repo.get_list(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=first_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=first_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 3', 'Second Topic 2', 'Second Topic 1']
 
     second_page = PagingOptions(3, 3)
-    news_list = repo.get_list(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=second_page)
+    news_list = repo.get_collection(filter_spec=filter_spec, order_options=order_by_id_desc, paging_options=second_page)
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['First Topic 3', 'First Topic 2', 'First Topic 1']
 
@@ -118,11 +118,11 @@ def test_get_list_example():
         AttributeSpecification('title', '%Topic%', Operator.ILIKE),
         AttributeSpecification('text', 'Third topic text 1', Operator.E)
     )
-    news_list = repo.get_list(filter_spec=filter_spec)
+    news_list = repo.get_collection(filter_spec=filter_spec)
     assert len(news_list) == 7
     assert [news.title for news in news_list] == ['First Topic 1', 'First Topic 2', 'First Topic 3', 'Second Topic 1', 'Second Topic 2', 'Second Topic 3', 'Third Theme 1']
 
     filter_spec = AttributeSpecification('id', [1, 2], Operator.IN)
-    news_list = repo.get_list(filter_spec=filter_spec)
+    news_list = repo.get_collection(filter_spec=filter_spec)
     assert len(news_list) == 2
     assert [news.id for news in news_list] == [1, 2]

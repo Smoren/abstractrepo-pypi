@@ -12,17 +12,17 @@ from tests.fixtures.providers import data_provider_for_news_repo, data_provider_
 @pytest.mark.parametrize("test_case", data_provider_for_news_filter())
 def test_filter(repo: ListBasedNewsRepository, test_case: Tuple[SpecificationInterface[News, bool], List[News]]):
     filter_spec, expected = test_case
-    actual = repo.get_list(filter_spec=filter_spec)
+    actual = repo.get_collection(filter_spec=filter_spec)
     assert pickle.dumps(actual) == pickle.dumps(expected)
 
 
 @pytest.mark.parametrize("repo", data_provider_for_news_repo())
 def test_filter_errors(repo: ListBasedNewsRepository):
     with pytest.raises(ValueError):
-        repo.get_list(AttributeSpecification('id', 12, Operator.IN))
+        repo.get_collection(AttributeSpecification('id', 12, Operator.IN))
 
     with pytest.raises(ValueError):
-        repo.get_list(AttributeSpecification('id', 12, Operator.NOT_IN))
+        repo.get_collection(AttributeSpecification('id', 12, Operator.NOT_IN))
 
     with pytest.raises(TypeError):
-        repo.get_list(AttributeSpecification('id', 12, 'UnsupportedOperator'))
+        repo.get_collection(AttributeSpecification('id', 12, 'UnsupportedOperator'))

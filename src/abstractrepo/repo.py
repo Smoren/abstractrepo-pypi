@@ -15,7 +15,7 @@ TUpdateSchema = TypeVar('TUpdateSchema')
 
 class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSchema, TUpdateSchema]):
     @abc.abstractmethod
-    def get_list(
+    def get_collection(
         self,
         filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
         order_options: Optional[OrderOptions] = None,
@@ -59,7 +59,7 @@ class ListBasedCrudRepository(
     def __init__(self):
         self._db = []
 
-    def get_list(
+    def get_collection(
         self,
         filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
         order_options: Optional[OrderOptions] = None,
