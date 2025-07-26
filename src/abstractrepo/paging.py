@@ -12,9 +12,11 @@ class PagingOptions:
 
 class Paginator:
     _page_size: int
+    _start_page: int
 
-    def __init__(self, page_size: int):
+    def __init__(self, page_size: int, start_page: int = 0):
         self._page_size = page_size
+        self._start_page = start_page
 
-    def get_paging_options(self, page_number: int) -> PagingOptions:
-        return PagingOptions(limit=self._page_size, offset=(page_number - 1) * self._page_size)
+    def get_page(self, page_number: int) -> PagingOptions:
+        return PagingOptions(limit=self._page_size, offset=(page_number - self._start_page) * self._page_size)
