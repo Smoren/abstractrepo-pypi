@@ -1,8 +1,8 @@
 import abc
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from abstractrepo.specification import SpecificationInterface, Operator, AttributeSpecification
-from abstractrepo.order import OrderOptions, OrderDirection
+from abstractrepo.order import OrderOptions
 from abstractrepo.paging import PagingOptions
 from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepositoryInterface
 
@@ -10,9 +10,9 @@ from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepositoryIn
 class News:
     id: int
     title: str
-    text: str
+    text: Optional[str]
 
-    def __init__(self, id: int, title: str, text: str):
+    def __init__(self, id: int, title: str, text: Optional[str] = None):
         self.id = id
         self.title = title
         self.text = text
@@ -20,9 +20,9 @@ class News:
 
 class NewsCreateForm:
     title: str
-    text: str
+    text: Union[str, None]
 
-    def __init__(self, title: str, text: str):
+    def __init__(self, title: str, text: Optional[str] = None):
         self.title = title
         self.text = text
 
@@ -31,7 +31,7 @@ class NewsUpdateForm:
     title: str
     text: str
 
-    def __init__(self, title: str, text: str):
+    def __init__(self, title: str, text: Optional[str] = None):
         self.title = title
         self.text = text
 
@@ -59,7 +59,7 @@ class ListBasedNewsRepository(
         return list(super().get_list(filter_spec=filter_spec, order_options=order_options, paging_options=paging_options))
 
     @property
-    def model_class(self) -> News:
+    def model_class(self) -> type[News]:
         return News
 
     def _create_model(self, form: NewsCreateForm, new_id: int) -> News:

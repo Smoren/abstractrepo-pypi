@@ -8,12 +8,17 @@ from tests.fixtures.classes import NewsRepositoryInterface, ListBasedNewsReposit
 def data_provider_for_news_repo() -> Generator[NewsRepositoryInterface, None, None]:
     repo = ListBasedNewsRepository()
     for i in range(100):
-        form = NewsCreateForm(title=f'Title {i+1}', text=f'Text {i+1}')
-        repo.create(form)
+        repo.create(NewsCreateForm(title=f'Title {i+1}', text=f'Text {i+1}'))
+
+    repo.create(NewsCreateForm(title=f'Title for None text', text=None))
     yield repo
 
 
 def data_provider_for_news_filter() -> Generator[Tuple[SpecificationInterface[News, bool], List[News]], None, None]:
+    yield (
+        AttributeSpecification('id', -1, Operator.E),
+        [],
+    )
     yield (
         AttributeSpecification('id', 1, Operator.E),
         [News(id=1, title='Title 1', text='Text 1')],
@@ -21,6 +26,34 @@ def data_provider_for_news_filter() -> Generator[Tuple[SpecificationInterface[Ne
     yield (
         AttributeSpecification('title', 'Title 22', Operator.E),
         [News(id=22, title='Title 22', text='Text 22')],
+    )
+    yield (
+        AttributeSpecification('text', 'Text 22', Operator.E),
+        [News(id=22, title='Title 22', text='Text 22')],
+    )
+    yield (
+        AttributeSpecification('text', None, Operator.E),
+        [News(id=101, title='Title for None text', text=None)],
+    )
+    yield (
+        AttributeSpecification('title', '%for None%', Operator.LIKE),
+        [News(id=101, title='Title for None text', text=None)],
+    )
+    yield (
+        AttributeSpecification('title', '%for none%', Operator.LIKE),
+        [],
+    )
+    yield (
+        AttributeSpecification('title', '%for none%', Operator.ILIKE),
+        [News(id=101, title='Title for None text', text=None)],
+    )
+    yield (
+        AttributeSpecification('title', '%for 111%', Operator.ILIKE),
+        [],
+    )
+    yield (
+        AttributeSpecification('id', 1, Operator.LT),
+        [],
     )
     yield (
         AttributeSpecification('id', 3, Operator.LT),
@@ -49,10 +82,30 @@ def data_provider_for_news_filter() -> Generator[Tuple[SpecificationInterface[Ne
         ],
     )
     yield (
+        AndSpecification(
+            AttributeSpecification('id', 99, Operator.GTE),
+            AttributeSpecification('text', None, Operator.NE),
+        ),
+        [
+            News(id=99, title='Title 99', text='Text 99'),
+            News(id=100, title='Title 100', text='Text 100'),
+        ],
+    )
+    yield (
         AttributeSpecification('id', [1, 2, 5], Operator.IN),
         [
             News(id=1, title='Title 1', text='Text 1'),
             News(id=2, title='Title 2', text='Text 2'),
+            News(id=5, title='Title 5', text='Text 5'),
+        ],
+    )
+    yield (
+        AndSpecification(
+            AttributeSpecification('id', 3, Operator.GT),
+            AttributeSpecification('id', 6, Operator.LT),
+        ),
+        [
+            News(id=4, title='Title 4', text='Text 4'),
             News(id=5, title='Title 5', text='Text 5'),
         ],
     )

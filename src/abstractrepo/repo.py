@@ -45,7 +45,7 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
 
     @property
     @abc.abstractmethod
-    def model_class(self) -> TModel:
+    def model_class(self) -> type[TModel]:
         raise NotImplementedError()
 
 

@@ -129,7 +129,7 @@ class AttributeSpecification(Generic[TModel], BaseAttributeSpecification[TModel,
             if isinstance(self.attribute_value, list):
                 return model_attr not in self.attribute_value
             raise ValueError('Attribute value must be a list')
-        raise NotImplementedError(f'Unsupported operator: {self.operator}')
+        raise TypeError(f'Unsupported operator: {self.operator}')
 
     @staticmethod
     def _like(pattern: str, string: str) -> bool:
