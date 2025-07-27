@@ -135,7 +135,7 @@ class ListBasedCrudRepository(
             return items
 
         def get_none_key(order_option: OrderOption, value_is_none: bool) -> bool:
-            if int(order_option.nones_order == NonesOrder.FIRST) ^ int(order_option.direction == OrderDirection.DESC):
+            if int(order_option.nones == NonesOrder.FIRST) ^ int(order_option.direction == OrderDirection.DESC):
                 return not value_is_none
             else:
                 return value_is_none

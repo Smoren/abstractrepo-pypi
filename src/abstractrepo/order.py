@@ -19,12 +19,12 @@ OrderOptionsTuple = Union[Tuple[str], Tuple[str, OrderDirection], Tuple[str, Ord
 class OrderOption:
     attribute: str
     direction: OrderDirection
-    nones_order: NonesOrder
+    nones: NonesOrder
 
-    def __init__(self, attribute: str, direction: OrderDirection, nones_order: NonesOrder = NonesOrder.FIRST):
+    def __init__(self, attribute: str, direction: OrderDirection, nones: NonesOrder = NonesOrder.FIRST):
         self.attribute = attribute
         self.direction = direction
-        self.nones_order = nones_order
+        self.nones = nones
 
 
 class OrderOptions:
@@ -44,8 +44,8 @@ class OrderOptionsBuilder:
     def __init__(self):
         self._options = []
 
-    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC, nones_order: NonesOrder = NonesOrder.LAST) -> "OrderOptionsBuilder":
-        self._options.append(OrderOption(attribute, direction, nones_order))
+    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC, nones: NonesOrder = NonesOrder.LAST) -> "OrderOptionsBuilder":
+        self._options.append(OrderOption(attribute, direction, nones))
         return self
 
     def add_mass(self, *items: OrderOptionsTuple) -> "OrderOptionsBuilder":
