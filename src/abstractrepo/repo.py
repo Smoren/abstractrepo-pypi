@@ -24,6 +24,10 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def count(self, filter_spec: Optional[SpecificationInterface[TModel, bool]] = None) -> int:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def get_item(self, item_id: TIdValueType) -> TModel:
         raise NotImplementedError()
 
@@ -70,6 +74,9 @@ class ListBasedCrudRepository(
         result = self._apply_order(result, order_options)
         result = self._apply_paging(result, paging_options)
         return result
+
+    def count(self, filter_spec: Optional[SpecificationInterface[TModel, bool]] = None) -> int:
+        return len(self._apply_filter(self._db, filter_spec))
 
     def get_item(self, item_id: TIdValueType) -> TModel:
         return self._find_by_id(item_id)

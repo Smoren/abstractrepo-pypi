@@ -13,7 +13,9 @@ from tests.fixtures.providers import data_provider_for_news_repo, data_provider_
 def test_filter(repo: ListBasedNewsRepository, test_case: Tuple[SpecificationInterface[News, bool], List[News]]):
     filter_spec, expected = test_case
     actual = repo.get_collection(filter_spec=filter_spec)
+    actual_count = repo.count(filter_spec=filter_spec)
     assert pickle.dumps(actual) == pickle.dumps(expected)
+    assert actual_count == len(expected)
 
 
 @pytest.mark.parametrize("repo", data_provider_for_news_repo())
