@@ -28,10 +28,14 @@ class OrderOption:
 
 
 class OrderOptions:
-    params: List[OrderOption]
+    _options: List[OrderOption]
 
-    def __init__(self, *params: OrderOption):
-        self.params = list(params)
+    def __init__(self, *options: OrderOption):
+        self._options = list(options)
+
+    @property
+    def options(self):
+        return self._options
 
 
 class OrderOptionsBuilder:

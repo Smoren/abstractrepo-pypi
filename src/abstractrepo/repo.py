@@ -145,7 +145,7 @@ class ListBasedCrudRepository(
             none_key = get_none_key(order_option, value is None)
             return none_key, value
 
-        for option in reversed(order_options.params):
+        for option in reversed(order_options.options):
             items = sorted(
                 items,
                 key=lambda item: get_sort_key(option, item),
