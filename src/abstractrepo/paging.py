@@ -1,3 +1,4 @@
+import abc
 from typing import Optional
 
 
@@ -20,3 +21,9 @@ class PageResolver:
 
     def get_page(self, page_number: int) -> PagingOptions:
         return PagingOptions(limit=self._page_size, offset=(page_number - self._start_page) * self._page_size)
+
+
+class PagingOptionsConverterInterface(abc.ABC):
+    @abc.abstractmethod
+    def convert(self, order: PagingOptions) -> PagingOptions:
+        raise NotImplementedError()
