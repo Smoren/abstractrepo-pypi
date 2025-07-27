@@ -1,7 +1,7 @@
 from abstractrepo.exceptions import ItemNotFoundException
 from abstractrepo.specification import Operator, AttributeSpecification, AndSpecification, OrSpecification
 from abstractrepo.order import OrderDirection, OrderOptionsBuilder
-from abstractrepo.paging import PagingOptions, Paginator
+from abstractrepo.paging import PagingOptions, PageResolver
 
 from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm
 
@@ -92,7 +92,7 @@ def test_get_list_example():
     assert len(news_list) == 3
     assert [news.title for news in news_list] == ['Second Topic 1', 'Second Topic 2', 'Second Topic 3']
 
-    paginator = Paginator(page_size=3, start_page=1)
+    paginator = PageResolver(page_size=3, start_page=1)
     first_page = paginator.get_page(1)
     news_list = repo.get_collection(filter_spec=filter_spec, paging_options=first_page)
     assert len(news_list) == 3

@@ -10,7 +10,7 @@ class PagingOptions:
         self.offset = offset
 
 
-class Paginator:
+class PageResolver:
     _page_size: int
     _start_page: int
 
