@@ -39,13 +39,13 @@ class OrderOptions:
 
 
 class OrderOptionsBuilder:
-    _params: List[OrderOption]
+    _options: List[OrderOption]
 
     def __init__(self):
-        self._params = []
+        self._options = []
 
     def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC, nones_order: NonesOrder = NonesOrder.LAST) -> "OrderOptionsBuilder":
-        self._params.append(OrderOption(attribute, direction, nones_order))
+        self._options.append(OrderOption(attribute, direction, nones_order))
         return self
 
     def add_mass(self, *items: OrderOptionsTuple) -> "OrderOptionsBuilder":
@@ -54,7 +54,7 @@ class OrderOptionsBuilder:
         return self
 
     def build(self) -> OrderOptions:
-        return OrderOptions(*self._params)
+        return OrderOptions(*self._options)
 
 
 class OrderOptionsConverterInterface(abc.ABC):
