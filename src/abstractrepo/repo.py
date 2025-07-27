@@ -3,7 +3,7 @@ import abc
 
 from abstractrepo.exceptions import ItemNotFoundException
 
-from abstractrepo.order import OrderOptions, OrderDirection
+from abstractrepo.order import OrderOptions, OrderDirection, NonesOrder, OrderOption
 from abstractrepo.paging import PagingOptions
 from abstractrepo.specification import SpecificationInterface
 
@@ -134,10 +134,21 @@ class ListBasedCrudRepository(
         if order_options is None:
             return items
 
+        def get_none_key(order_option: OrderOption, value_is_none: bool) -> bool:
+            if int(order_option.nones_order == NonesOrder.FIRST) ^ int(order_option.direction == OrderDirection.DESC):
+                return not value_is_none
+            else:
+                return value_is_none
+
+        def get_sort_key(order_option: OrderOption, item):
+            value = getattr(item, option.attribute)
+            none_key = get_none_key(order_option, value is None)
+            return none_key, value
+
         for option in reversed(order_options.params):
             items = sorted(
                 items,
-                key=lambda item: getattr(item, option.attribute),
+                key=lambda item: get_sort_key(option, item),
                 reverse=option.direction == OrderDirection.DESC,
             )
 
