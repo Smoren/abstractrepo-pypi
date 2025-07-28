@@ -60,8 +60,8 @@ class ListBasedCrudRepository(
 ):
     _db: List[TModel]
 
-    def __init__(self):
-        self._db = []
+    def __init__(self, items: Optional[List[TModel]] = None):
+        self._db = items.copy() if items is not None else []
 
     def get_collection(
         self,
