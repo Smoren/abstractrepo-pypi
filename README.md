@@ -1,4 +1,4 @@
-# AbstractRepo - Python Repository Pattern Implementation for Python 3
+# AbstractRepo - Python Repository Pattern Implementation
 
 [![PyPI package](https://img.shields.io/badge/pip%20install-abstractrepo-brightgreen)](https://pypi.org/project/abstractrepo/)
 [![version number](https://img.shields.io/pypi/v/abstractrepo?color=green&label=version)](https://github.com/Smoren/abstractrepo-pypi/releases)
