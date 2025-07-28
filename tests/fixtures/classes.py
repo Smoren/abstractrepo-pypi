@@ -46,9 +46,12 @@ class ListBasedNewsRepository(
 ):
     _next_id: int
 
-    def __init__(self):
+    def __init__(self, items: Optional[List[News]] = None):
         super().__init__()
         self._next_id = 0
+
+        if items is not None:
+            self._db = items.copy()
 
     def get_collection(
         self,

@@ -2,7 +2,18 @@ from typing import Generator, Tuple, List
 
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator, AndSpecification, \
     OrSpecification, NotSpecification
-from tests.fixtures.classes import News
+from tests.fixtures.classes import News, ListBasedNewsRepository, NewsCreateForm, NewsRepositoryInterface
+
+
+def data_provider_for_news_repo(size: int, with_no_text_item: bool = False) -> Generator[NewsRepositoryInterface, None, None]:
+    repo = ListBasedNewsRepository()
+    for i in range(size - int(with_no_text_item)):
+        repo.create(NewsCreateForm(title=f'Title {i+1}', text=f'Text {i+1}'))
+
+    if with_no_text_item:
+        repo.create(NewsCreateForm(title=f'Title for None text', text=None))
+
+    yield repo
 
 
 def data_provider_for_news_filter() -> Generator[Tuple[SpecificationInterface[News, bool], List[News]], None, None]:

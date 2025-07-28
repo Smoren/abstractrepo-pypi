@@ -5,8 +5,7 @@ import pytest
 
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator
 from tests.fixtures.classes import ListBasedNewsRepository, News
-from tests.providers.common import data_provider_for_news_repo
-from tests.providers.filter import data_provider_for_news_filter
+from tests.providers.filter import data_provider_for_news_filter, data_provider_for_news_repo
 
 
 @pytest.mark.parametrize("repo", data_provider_for_news_repo(101, with_no_text_item=True))
