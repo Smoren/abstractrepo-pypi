@@ -6,17 +6,18 @@
 [![Actions Status](https://github.com/Smoren/abstractrepo-pypi/workflows/Test/badge.svg)](https://github.com/Smoren/abstractrepo-pypi/actions)
 [![License](https://img.shields.io/github/license/Smoren/abstractrepo-pypi)](https://github.com/Smoren/abstractrepo-pypi/blob/master/LICENSE)
 
-`AbstractRepo` provides a robust implementation of the Repository Pattern with support for filtering, sorting, 
-and pagination using abstract specifications.
+The Abstract Repository library provides a flexible abstraction layer between your application code and data storage systems. 
+It implements the repository pattern with support for CRUD operations, filtering using specifications, ordering, pagination, and exception handling. 
+This design allows you to easily switch between different persistence mechanisms while maintaining clean separation of concerns in your application architecture.
 
-## Features
-- Generic CRUD repository interface
-- Specification-based filtering
-- Flexible ordering with null value handling
-- Pagination support
-- List-based in-memory implementation
-- Custom exception hierarchy
-- Type-safe generic implementations
+## Core Concepts
+- **CRUD Operations:** Standard Create, Read, Update, Delete functionality
+- **Specifications Pattern:** Flexible filtering mechanism based on business rules
+- **Ordering Options:** Customizable sorting with control over NULL values placement
+- **Pagination Support:** Limit and offset-based page navigation
+- **Strong Typing:** Uses Python's typing module for robustness
+- **Extensibility:** Designed for easy extension to various database technologies
+- **In-Memory Implementation:** Built-in list-based repository for testing/development
 
 ## Installation
 ```bash
