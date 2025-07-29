@@ -75,14 +75,6 @@ class ListBasedNewsRepository(
         super().__init__(items)
         self._next_id = 0
 
-    def get_collection(
-        self,
-        filter_spec: Optional[SpecificationInterface[User, bool]] = None,
-        order_options: Optional[OrderOptions] = None,
-        paging_options: Optional[PagingOptions] = None,
-    ) -> List[User]:
-        return list(super().get_collection(filter_spec=filter_spec, order_options=order_options, paging_options=paging_options))
-
     @property
     def model_class(self) -> Type[User]:
         return User
@@ -224,15 +216,15 @@ active_count = repo.count(filter_spec=AttributeSpecification("is_active", True))
 ## API Reference
 
 ### Repository Methods
-| Method           | Parameters                                       | Returns            | Description                          |
-|------------------|--------------------------------------------------|--------------------|--------------------------------------|
-| `get_collection` | `filter_spec`, `order_options`, `paging_options` | `Iterable[TModel]` | Get filtered/sorted/paged collection |
-| `count`          | `filter_spec`                                    | `int`              | Count filtered items                 |
-| `get_item`       | `item_id`                                        | `TModel`           | Get single item by ID                |
-| `exists`         | `item_id`                                        | `bool`             | Check item existence                 |
-| `create`         | `form`                                           | `TModel`           | Create new item                      |
-| `update`         | `item_id`, `form`                                | `TModel`           | Update existing item                 |
-| `delete`         | `item_id`                                        | `TModel`           | Delete item                          |
+| Method           | Parameters                                       | Returns        | Description                          |
+|------------------|--------------------------------------------------|----------------|--------------------------------------|
+| `get_collection` | `filter_spec`, `order_options`, `paging_options` | `List[TModel]` | Get filtered/sorted/paged collection |
+| `count`          | `filter_spec`                                    | `int`          | Count filtered items                 |
+| `get_item`       | `item_id`                                        | `TModel`       | Get single item by ID                |
+| `exists`         | `item_id`                                        | `bool`         | Check item existence                 |
+| `create`         | `form`                                           | `TModel`       | Create new item                      |
+| `update`         | `item_id`, `form`                                | `TModel`       | Update existing item                 |
+| `delete`         | `item_id`                                        | `TModel`       | Delete item                          |
 
 ### Specification Types
 | Class                    | Description               |

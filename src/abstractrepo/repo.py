@@ -1,4 +1,4 @@
-from typing import List, TypeVar, Generic, Optional, Iterable, Type
+from typing import List, TypeVar, Generic, Optional, Type
 import abc
 
 from abstractrepo.exceptions import ItemNotFoundException
@@ -20,7 +20,7 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
         filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
         order_options: Optional[OrderOptions] = None,
         paging_options: Optional[PagingOptions] = None,
-    ) -> Iterable[TModel]:
+    ) -> List[TModel]:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -68,7 +68,7 @@ class ListBasedCrudRepository(
         filter_spec: Optional[SpecificationInterface[TModel, bool]] = None,
         order_options: Optional[OrderOptions] = None,
         paging_options: Optional[PagingOptions] = None,
-    ) -> Iterable[TModel]:
+    ) -> List[TModel]:
         result = self._db.copy()
         result = self._apply_filter(result, filter_spec)
         result = self._apply_order(result, order_options)

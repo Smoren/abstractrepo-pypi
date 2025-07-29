@@ -50,14 +50,6 @@ class ListBasedNewsRepository(
         super().__init__(items)
         self._next_id = 0
 
-    def get_collection(
-        self,
-        filter_spec: Optional[SpecificationInterface[News, bool]] = None,
-        order_options: Optional[OrderOptions] = None,
-        paging_options: Optional[PagingOptions] = None,
-    ) -> List[News]:
-        return list(super().get_collection(filter_spec=filter_spec, order_options=order_options, paging_options=paging_options))
-
     @property
     def model_class(self) -> Type[News]:
         return News

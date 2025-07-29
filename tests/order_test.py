@@ -4,7 +4,7 @@ from typing import Tuple, List
 import pytest
 
 from abstractrepo.order import OrderOptions
-from tests.fixtures.classes import ListBasedNewsRepository, News, NewsRepositoryInterface
+from tests.fixtures.classes import ListBasedNewsRepository, News
 from tests.providers.order import data_provider_for_news_order
 
 
