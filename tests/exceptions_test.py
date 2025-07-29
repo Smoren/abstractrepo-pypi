@@ -15,6 +15,7 @@ def test_item_not_found_exception():
         raise ItemNotFoundException(User, 42)
     except ItemNotFoundException as e:
         assert str(e) == 'Item of type User not found'
+        assert e.model_class == User
         assert e.cls == User
         assert e.item_id == 42
 
@@ -23,6 +24,7 @@ def test_item_not_found_exception():
         raise ItemNotFoundException(User, specification=specification)
     except ItemNotFoundException as e:
         assert str(e) == 'Item of type User not found'
+        assert e.model_class == User
         assert e.cls == User
         assert e.item_id is None
         assert e.specification == specification
@@ -33,6 +35,7 @@ def test_unique_violation_exception():
         raise UniqueViolationException(User, 'create', {'username': 'test'})
     except UniqueViolationException as e:
         assert str(e) == 'Action create of User instance failed due to unique violation'
+        assert e.model_class == User
         assert e.cls == User
         assert e.action == 'create'
         assert e.form == {'username': 'test'}
@@ -43,6 +46,7 @@ def test_relation_violation_exception():
         raise RelationViolationException(User, 'update', {'username': 'test'})
     except RelationViolationException as e:
         assert str(e) == 'Action update of User instance failed due to relation violation'
+        assert e.model_class == User
         assert e.cls == User
         assert e.action == 'update'
         assert e.form == {'username': 'test'}

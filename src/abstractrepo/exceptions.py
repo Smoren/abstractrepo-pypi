@@ -1,4 +1,5 @@
 from typing import Optional
+from warnings import deprecated
 
 from abstractrepo.specification import SpecificationInterface
 
@@ -8,20 +9,25 @@ class RepositoryExceptionInterface(Exception):
 
 
 class ItemNotFoundException(RepositoryExceptionInterface):
-    _cls: type
+    _model_class: type
     _item_id: Optional[int]
     _specification: Optional[SpecificationInterface]
 
-    def __init__(self, cls: type, item_id: Optional[int] = None, specification: Optional[SpecificationInterface] = None):
-        msg = f'Item of type {cls.__name__} not found'
+    def __init__(self, model_class: type, item_id: Optional[int] = None, specification: Optional[SpecificationInterface] = None):
+        msg = f'Item of type {model_class.__name__} not found'
         super().__init__(msg)
-        self._cls = cls
+        self._model_class = model_class
         self._item_id = item_id
         self._specification = specification
 
     @property
+    def model_class(self) -> type:
+        return self._model_class
+
+    @property
+    @deprecated('Use model_class instead')
     def cls(self) -> type:
-        return self._cls
+        return self._model_class
 
     @property
     def item_id(self) -> Optional[int]:
@@ -33,19 +39,24 @@ class ItemNotFoundException(RepositoryExceptionInterface):
 
 
 class UniqueViolationException(RepositoryExceptionInterface):
-    _cls: type
+    _model_class: type
     _action: str
     _form: object
 
-    def __init__(self, cls: type, action: str, form: object):
-        super().__init__(f'Action {action} of {cls.__name__} instance failed due to unique violation')
-        self._cls = cls
+    def __init__(self, model_class: type, action: str, form: object):
+        super().__init__(f'Action {action} of {model_class.__name__} instance failed due to unique violation')
+        self._model_class = model_class
         self._action = action
         self._form = form
 
     @property
+    def model_class(self) -> type:
+        return self._model_class
+
+    @property
+    @deprecated('Use model_class instead')
     def cls(self) -> type:
-        return self._cls
+        return self._model_class
 
     @property
     def action(self) -> str:
@@ -57,19 +68,24 @@ class UniqueViolationException(RepositoryExceptionInterface):
 
 
 class RelationViolationException(RepositoryExceptionInterface):
-    _cls: type
+    _model_class: type
     _action: str
     _form: object
 
-    def __init__(self, cls: type, action: str, form: object):
-        super().__init__(f'Action {action} of {cls.__name__} instance failed due to relation violation')
-        self._cls = cls
+    def __init__(self, model_class: type, action: str, form: object):
+        super().__init__(f'Action {action} of {model_class.__name__} instance failed due to relation violation')
+        self._model_class = model_class
         self._action = action
         self._form = form
 
     @property
+    def model_class(self) -> type:
+        return self._model_class
+
+    @property
+    @deprecated('Use model_class instead')
     def cls(self) -> type:
-        return self._cls
+        return self._model_class
 
     @property
     def action(self) -> str:
