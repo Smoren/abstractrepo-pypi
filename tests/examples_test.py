@@ -1,12 +1,15 @@
-from abstractrepo.exceptions import ItemNotFoundException
+import pytest
+
+from abstractrepo.exceptions import ItemNotFoundException, UniqueViolationException
 from abstractrepo.specification import Operator, AttributeSpecification, AndSpecification, OrSpecification
 from abstractrepo.order import OrderDirection, OrderOptionsBuilder
 from abstractrepo.paging import PagingOptions, PageResolver
 
-from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm
+from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm, ListBasedUserRepository, \
+    UserCreateForm
 
 
-def test_first_example():
+def test_news_repo():
     repo = ListBasedNewsRepository()
     assert len(repo.get_collection()) == 0
 
@@ -53,7 +56,7 @@ def test_first_example():
         assert True
 
 
-def test_get_list_example():
+def test_news_repo_get_collection():
     repo = ListBasedNewsRepository()
     assert len(repo.get_collection()) == 0
 
@@ -126,3 +129,29 @@ def test_get_list_example():
     news_list = repo.get_collection(filter_spec=filter_spec)
     assert len(news_list) == 2
     assert [news.id for news in news_list] == [1, 2]
+
+
+def test_user_repo():
+    repo = ListBasedUserRepository()
+    assert repo.count() == 0
+    assert len(repo.get_collection()) == 0
+
+    user1 = repo.create(UserCreateForm(username='user1', password='pass1', display_name='User 1'))
+    assert user1.id == 1
+    assert repo.count() == 1
+    assert len(repo.get_collection()) == 1
+
+    user1 = repo.get_by_username(user1.username)
+    assert user1.id == 1
+    assert user1.username == 'user1'
+    assert user1.password == 'pass1'
+    assert user1.display_name == 'User 1'
+
+    with pytest.raises(ItemNotFoundException):
+        repo.get_item(2)
+
+    with pytest.raises(ItemNotFoundException):
+        repo.get_by_username('user2')
+
+    with pytest.raises(UniqueViolationException):
+        repo.create(UserCreateForm(username='user1', password='pass2', display_name='Duplicate User 1'))

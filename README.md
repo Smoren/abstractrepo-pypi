@@ -30,16 +30,32 @@ pip install abstractrepo
 
 ```python3
 import abc
+from pydantic import BaseModel
 from abstractrepo.repo import CrudRepositoryInterface
 
 
-class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateSchema, UserUpdateSchema], abc.ABC):  # TModel, TIdValue, TCreateSchema, TUpdateSchema
+class User(BaseModel):
+    id: int
+    username: str
+    password: str
+    display_name: str
+
+class UserCreateForm(BaseModel):
+    username: str
+    password: str
+    display_name: str
+
+class UserUpdateForm(BaseModel):
+    display_name: str
+
+
+class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):  # TModel, TIdValue, TCreateSchema, TUpdateSchema
     pass
 
 
 class UserRepository(UserRepositoryInterface):
-  # Implement abstract methods
-  ...
+    # Implement abstract methods
+    ...
 ```
 
 **Key Methods:**
@@ -57,16 +73,15 @@ import abc
 from typing import Optional, List
 from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepository
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator
-from abstractrepo.order import OrderOptions
-from abstractrepo.paging import PagingOptions
+from abstractrepo.exceptions import ItemNotFoundException, UniqueViolationException
 
 
-class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateSchema, UserUpdateSchema], abc.ABC):
+class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):
     pass
 
 
-class ListBasedNewsRepository(
-    ListBasedCrudRepository[User, int, UserCreateSchema, UserUpdateSchema],
+class ListBasedUserRepository(
+    ListBasedCrudRepository[User, int, UserCreateForm, UserUpdateForm],
     UserRepositoryInterface,
 ):
     _next_id: int
@@ -75,11 +90,21 @@ class ListBasedNewsRepository(
         super().__init__(items)
         self._next_id = 0
 
+    def get_by_username(self, username: str) -> User:
+        items = self.get_collection(AttributeSpecification('username', username))
+        if len(items) == 0:
+            raise ItemNotFoundException(User)
+
+        return items[0]
+
     @property
     def model_class(self) -> Type[User]:
         return User
 
     def _create_model(self, form: UserCreateForm, new_id: int) -> User:
+        if self._username_exists(form.username):
+            raise UniqueViolationException(User, 'create', form)
+
         return User(
             id=new_id,
             username=form.username,
@@ -90,6 +115,9 @@ class ListBasedNewsRepository(
     def _update_model(self, model: User, form: UserUpdateForm) -> User:
         model.display_name = form.display_name
         return model
+
+    def _username_exists(self, username: str) -> bool:
+        return self.count(AttributeSpecification('username', username)) > 0
 
     def _generate_id(self) -> int:
         self._next_id += 1
