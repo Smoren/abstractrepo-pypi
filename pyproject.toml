@@ -10,4 +10,7 @@ exclude_also = [
 
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
+
+    # Don't complain if non-runnable code isn't run:
+    "# pragma: no cover",
 ]

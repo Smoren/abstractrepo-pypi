@@ -1,5 +1,11 @@
+import functools
+import warnings
 from typing import Optional
-from warnings import deprecated
+
+try:
+    from warnings import deprecated
+except ImportError:  # pragma: no cover
+    deprecated = lambda msg: lambda fn: functools.wraps(fn)(lambda *a, **kw: (warnings.warn(msg, category=DeprecationWarning, stacklevel=2), fn(*a, **kw))[1])  # pragma: no cover
 
 from abstractrepo.specification import SpecificationInterface
 
