@@ -1,6 +1,6 @@
 import abc
 from enum import Enum
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 
 class OrderDirection(Enum):
@@ -21,10 +21,20 @@ class OrderOption:
     direction: OrderDirection
     nones: NonesOrder
 
-    def __init__(self, attribute: str, direction: OrderDirection, nones: NonesOrder = NonesOrder.FIRST):
+    def __init__(self, attribute: str, direction: OrderDirection, nones: Optional[NonesOrder] = None):
         self.attribute = attribute
         self.direction = direction
-        self.nones = nones
+        self._set_nones(nones)
+
+    def _set_nones(self, nones: NonesOrder) -> None:
+        if nones is not None:
+            self.nones = nones
+            return
+
+        if self.direction == OrderDirection.ASC:
+            self.nones = NonesOrder.LAST
+        else:
+            self.nones = NonesOrder.FIRST
 
 
 class OrderOptions:
@@ -44,7 +54,7 @@ class OrderOptionsBuilder:
     def __init__(self):
         self._options = []
 
-    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC, nones: NonesOrder = NonesOrder.LAST) -> "OrderOptionsBuilder":
+    def add(self, attribute: str, direction: OrderDirection = OrderDirection.ASC, nones: Optional[NonesOrder] = None) -> "OrderOptionsBuilder":
         self._options.append(OrderOption(attribute, direction, nones))
         return self
 
