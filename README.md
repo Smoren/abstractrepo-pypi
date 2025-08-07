@@ -267,7 +267,7 @@ active_count = repo.count(filter_spec=AttributeSpecification("is_active", True))
 OrderOption(
     attribute: str,
     direction: OrderDirection = OrderDirection.ASC,
-    nones: NonesOrder = NonesOrder.FIRST,
+    nones: Optional[NonesOrder] = None,
 )
 ```
 
