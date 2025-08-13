@@ -568,7 +568,7 @@ PagingOptions(
 4. **Pagination**: Use `PageResolver` for consistent page-based navigation.
 5. **Error Handling**: Catch repository-specific exceptions.
 6. **Asynchronous Operations**: Use `await` with asynchronous repository methods to ensure non-blocking execution.
-7. **Use pydantic for data modeling**: Define your models using pydantic, allowing for robust data validation and auto-generation of CRUD repository methods.
+7. **Use pydantic for data modeling**: Define your models using pydantic, allowing for robust data validation.
 
 ## Dependencies
 
