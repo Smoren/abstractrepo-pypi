@@ -96,7 +96,7 @@ class UserRepository(UserRepositoryInterface):
 | `create`         | `form`                                           | `TModel`       | Creates a new item in the repository using the provided creation form.                         |
 | `update`         | `item_id`, `form`                                | `TModel`       | Updates an existing item identified by its ID with data from the update form.                  |
 | `delete`         | `item_id`                                        | `TModel`       | Deletes an item from the repository by its ID.                                                 |
-| `model_class`    | (Property)                                       | `Type[TModel]` | Returns the Pydantic model class associated with the repository.                               |
+| `model_class`    | (Property)                                       | `Type[TModel]` | Returns the model class associated with the repository.                                        |
 
 ### List-Based Implementation (`ListBasedCrudRepository`)
 
@@ -185,12 +185,9 @@ This interface mirrors the synchronous `CrudRepositoryInterface` but with `async
 
 ```python
 import abc
-from typing import List, TypeVar, Generic, Optional, Type
+from typing import TypeVar
 from pydantic import BaseModel
 from abstractrepo.repo import AsyncCrudRepositoryInterface
-from abstractrepo.order import OrderOptions
-from abstractrepo.paging import PagingOptions
-from abstractrepo.specification import SpecificationInterface
 
 TModel = TypeVar("TModel")
 TIdValueType = TypeVar("TIdValueType")
@@ -248,18 +245,18 @@ premium_filter_spec = AndSpecification(
 
 `AbstractRepo` provides a rich set of operators for various comparison and matching needs:
 
-| Operator | Description                   |
-| :------- | :---------------------------- |
-| `E`      | Equal                         |
-| `NE`     | Not Equal                     |
-| `GT`     | Greater Than                  |
-| `LT`     | Less Than                     |
-| `GTE`    | Greater Than or Equal         |
-| `LTE`    | Less Than or Equal            |
-| `LIKE`   | Case-Sensitive Pattern Match  |
-| `ILIKE`  | Case-Insensitive Pattern Match|
-| `IN`     | In List                       |
-| `NOT_IN` | Not In List                   |
+| Operator | Description                    |
+| :------- |:-------------------------------|
+| `E`      | Equal                          |
+| `NE`     | Not Equal                      |
+| `GT`     | Greater Than                   |
+| `LT`     | Less Than                      |
+| `GTE`    | Greater Than or Equal          |
+| `LTE`    | Less Than or Equal             |
+| `LIKE`   | Case-Sensitive Pattern Match   |
+| `ILIKE`  | Case-Insensitive Pattern Match |
+| `IN`     | In List                        |
+| `NOT_IN` | Not In List                    |
 
 ### Ordering
 
@@ -331,7 +328,7 @@ class User(BaseModel):
     name: str
     email: str
 
-# Define forms for creation and update (can be simple dicts or Pydantic models)
+# Define forms for creation and update (can be pure classes Pydantic models)
 class UserCreateForm(BaseModel):
     name: str
     email: str
