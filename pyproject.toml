@@ -2,8 +2,10 @@
 requires = ["setuptools>=46.4.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.coverage.run]
+source = ["abstractrepo"]
+
 [tool.coverage.report]
-# Regexes for lines to exclude from consideration
 exclude_also = [
     "raise NotImplementedError",
     "@(abc\\.)?abstractmethod",
