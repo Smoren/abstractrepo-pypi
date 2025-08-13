@@ -14,6 +14,19 @@ TUpdateSchema = TypeVar('TUpdateSchema')
 
 
 class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSchema, TUpdateSchema]):
+    """Abstract Base Class defining the contract for synchronous CRUD repository operations.
+
+    This interface specifies the standard Create, Read, Update, and Delete (CRUD) operations
+    that any concrete synchronous repository implementation must adhere to. It promotes a
+    clean separation of concerns, making application logic independent of the underlying
+    data persistence mechanism.
+
+    Type Parameters:
+        TModel: The type of the model managed by the repository.
+        TIdValueType: The type of the unique identifier (primary key) for the model.
+        TCreateSchema: The type of the schema used for creating new models.
+        TUpdateSchema: The type of the schema used for updating existing models.
+    """
     @abc.abstractmethod
     def get_collection(
         self,
@@ -21,39 +34,134 @@ class CrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSche
         order_options: Optional[OrderOptions] = None,
         paging_options: Optional[PagingOptions] = None,
     ) -> List[TModel]:
+        """Retrieves a collection of items based on filtering, sorting, and pagination options.
+
+        Args:
+            filter_spec: An optional SpecificationInterface instance to filter the collection.
+            order_options: An optional OrderOptions instance to specify the sorting order.
+            paging_options: An optional PagingOptions instance to control pagination.
+
+        Returns:
+            A list of TModel instances matching the criteria.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def count(self, filter_spec: Optional[SpecificationInterface[TModel, bool]] = None) -> int:
+        """Returns the total count of items matching the given filter specification.
+
+         Args:
+             filter_spec: An optional SpecificationInterface instance to filter the items.
+
+         Returns:
+             The number of items matching the filter.
+         """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def get_item(self, item_id: TIdValueType) -> TModel:
+        """Retrieves a single item by its unique identifier.
+
+        Args:
+            item_id: The unique identifier of the item to retrieve.
+
+        Returns:
+            The TModel instance corresponding to the item_id.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def exists(self, item_id: TIdValueType) -> bool:
+        """Checks if an item with the specified ID exists in the repository.
+
+        Args:
+            item_id: The unique identifier of the item to check.
+
+        Returns:
+            True if an item with the specified ID exists, False otherwise.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def create(self, form: TCreateSchema) -> TModel:
+        """Creates a new item in the repository using the provided creation form.
+
+         Args:
+             form: The TCreateSchema instance containing data for the new item.
+
+         Returns:
+             The newly created TModel instance.
+
+        Raises:
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def update(self, item_id: TIdValueType, form: TUpdateSchema) -> TModel:
+        """Updates an existing item identified by its ID with data from the update form.
+
+        Args:
+            item_id: The unique identifier of the item to update.
+            form: The TUpdateSchema instance containing data for updating the item.
+
+        Returns:
+            The updated TModel instance.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
+       """
         raise NotImplementedError()
 
     @abc.abstractmethod
     def delete(self, item_id: TIdValueType) -> TModel:
+        """Deletes an item from the repository by its ID.
+
+        Args:
+            item_id: The unique identifier of the item to delete.
+
+        Returns:
+            The deleted TModel instance.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+        """
         raise NotImplementedError()
 
     @property
     @abc.abstractmethod
     def model_class(self) -> Type[TModel]:
+        """Returns the model class associated with the repository.
+
+        This property should return the Python class that represents the data model
+        (e.g., a Pydantic BaseModel, SQLAlchemy model, etc.) that this repository manages.
+
+        Returns:
+            The Type object representing the model class.
+        """
         raise NotImplementedError()
 
 
 class AsyncCrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreateSchema, TUpdateSchema]):
+    """Abstract Base Class defining the contract for asynchronous CRUD repository operations.
+
+    This interface specifies the standard Create, Read, Update, and Delete (CRUD) operations
+    that any concrete synchronous repository implementation must adhere to. It promotes a
+    clean separation of concerns, making application logic independent of the underlying
+    data persistence mechanism.
+
+    Type Parameters:
+        TModel: The type of the model managed by the repository.
+        TIdValueType: The type of the unique identifier (primary key) for the model.
+        TCreateSchema: The type of the schema used for creating new models.
+        TUpdateSchema: The type of the schema used for updating existing models.
+    """
     @abc.abstractmethod
     async def get_collection(
         self,
@@ -61,35 +169,117 @@ class AsyncCrudRepositoryInterface(abc.ABC, Generic[TModel, TIdValueType, TCreat
         order_options: Optional[OrderOptions] = None,
         paging_options: Optional[PagingOptions] = None,
     ) -> List[TModel]:
+        """Retrieves a collection of items based on filtering, sorting, and pagination options.
+
+        Args:
+            filter_spec: An optional SpecificationInterface instance to filter the collection.
+            order_options: An optional OrderOptions instance to specify the sorting order.
+            paging_options: An optional PagingOptions instance to control pagination.
+
+        Returns:
+            A list of TModel instances matching the criteria.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def count(self, filter_spec: Optional[SpecificationInterface[TModel, bool]] = None) -> int:
+        """Returns the total count of items matching the given filter specification.
+
+        Args:
+            filter_spec: An optional SpecificationInterface instance to filter the items.
+
+        Returns:
+            The number of items matching the filter.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def get_item(self, item_id: TIdValueType) -> TModel:
+        """Retrieves a single item by its unique identifier.
+
+        Args:
+            item_id: The unique identifier of the item to retrieve.
+
+        Returns:
+            The TModel instance corresponding to the item_id.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def exists(self, item_id: TIdValueType) -> bool:
+        """Checks if an item with the specified ID exists in the repository.
+
+        Args:
+            item_id: The unique identifier of the item to check.
+
+        Returns:
+            True if an item with the specified ID exists, False otherwise.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def create(self, form: TCreateSchema) -> TModel:
+        """Creates a new item in the repository using the provided creation form.
+
+        Args:
+            form: The TCreateSchema instance containing data for the new item.
+
+        Returns:
+            The newly created TModel instance.
+
+        Raises:
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def update(self, item_id: TIdValueType, form: TUpdateSchema) -> TModel:
+        """Updates an existing item identified by its ID with data from the update form.
+
+        Args:
+            item_id: The unique identifier of the item to update.
+            form: The TUpdateSchema instance containing data for updating the item.
+
+        Returns:
+            The updated TModel instance.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
+        """
         raise NotImplementedError()
 
     @abc.abstractmethod
     async def delete(self, item_id: TIdValueType) -> TModel:
+        """Deletes an item from the repository by its ID.
+
+        Args:
+            item_id: The unique identifier of the item to delete.
+
+        Returns:
+            The deleted TModel instance.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+        """
         raise NotImplementedError()
 
     @property
     @abc.abstractmethod
     def model_class(self) -> Type[TModel]:
+        """Returns the model class associated with the repository.
+
+        This property should return the Python class that represents the data model
+        (e.g., a Pydantic BaseModel, SQLAlchemy model, etc.) that this repository manages.
+
+        Returns:
+            The Type object representing the model class.
+        """
         raise NotImplementedError()
 
 
@@ -157,7 +347,7 @@ class ListBasedCrudRepository(
         try:
             return next(filter(lambda item: self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))
         except StopIteration:
-            raise ItemNotFoundException(self.model_class, item_id)
+            raise ItemNotFoundException[TIdValueType](self.model_class, item_id)
 
     def _exclude_by_id(self, item_id: TIdValueType) -> TModel:
         return list(filter(lambda item: not self._get_id_filter_specification(item_id).is_satisfied_by(item), self._db))
@@ -268,7 +458,7 @@ class AsyncListBasedCrudRepository(
     async def _find_by_id(self, item_id: TIdValueType) -> TModel:
         filtered = await self._apply_filter(self._db, self._get_id_filter_specification(item_id))
         if not filtered:
-            raise ItemNotFoundException(self.model_class, item_id)
+            raise ItemNotFoundException[TIdValueType](self.model_class, item_id)
         return filtered[0]
 
     async def _exclude_by_id(self, item_id: TIdValueType) -> List[TModel]:
