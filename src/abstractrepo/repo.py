@@ -633,6 +633,9 @@ class AsyncListBasedCrudRepository(
 
         Returns:
             The TModel instance corresponding to the item_id.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
         """
         return await self._find_by_id(item_id)
 
@@ -656,6 +659,10 @@ class AsyncListBasedCrudRepository(
 
         Returns:
             The created item.
+
+        Raises:
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
         """
         item = await self._create_model(form, await self._generate_id())
         self._db.append(item)
@@ -670,6 +677,11 @@ class AsyncListBasedCrudRepository(
 
         Returns:
             The updated item.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
+            UniqueConstraintViolation: If a unique constraint violation occurs.
+            RelationshipConstraintViolation: If a relationship constraint violation occurs.
         """
         item = await self._find_by_id(item_id)
         return await self._update_model(item, form)
@@ -682,6 +694,9 @@ class AsyncListBasedCrudRepository(
 
         Returns:
             The deleted item.
+
+        Raises:
+            ItemNotFoundException[TIdValueType]: If no item with the specified ID is found.
         """
         item = await self._find_by_id(item_id)
         self._db = await self._exclude_by_id(item_id)
