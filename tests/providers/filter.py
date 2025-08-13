@@ -2,7 +2,8 @@ from typing import Generator, Tuple, List
 
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator, AndSpecification, \
     OrSpecification, NotSpecification
-from tests.fixtures.classes import News, ListBasedNewsRepository, NewsCreateForm, NewsRepositoryInterface
+from tests.fixtures.classes import News, ListBasedNewsRepository, NewsCreateForm, NewsRepositoryInterface, \
+    AsyncListBasedNewsRepository, AsyncNewsRepositoryInterface
 
 
 def data_provider_for_news_repo(size: int, with_no_text_item: bool = False) -> Generator[NewsRepositoryInterface, None, None]:
@@ -14,6 +15,23 @@ def data_provider_for_news_repo(size: int, with_no_text_item: bool = False) -> G
         repo.create(NewsCreateForm(title=f'Title for None text', text=None))
 
     yield repo
+
+
+def data_provider_for_news_repo_async(size: int, with_no_text_item: bool = False) -> Generator[AsyncNewsRepositoryInterface, None, None]:
+    # Helper function to run async generator to completion
+    async def collect():
+        repo = AsyncListBasedNewsRepository()
+        for i in range(size - int(with_no_text_item)):
+            await repo.create(NewsCreateForm(title=f'Title {i + 1}', text=f'Text {i + 1}'))
+
+        if with_no_text_item:
+            await repo.create(NewsCreateForm(title=f'Title for None text', text=None))
+
+        return [repo]
+
+    # Run the async collection synchronously
+    import asyncio
+    yield from asyncio.run(collect())
 
 
 def data_provider_for_news_filter() -> Generator[Tuple[SpecificationInterface[News, bool], List[News]], None, None]:

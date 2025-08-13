@@ -46,6 +46,6 @@ setuptools.setup(
     install_requires=[],
     extras_require={
         'dev': ['check-manifest', 'coverage'],
-        'test': ['coverage'],
+        'test': ['coverage', 'pytest-asyncio'],
     },
 )
