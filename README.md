@@ -10,14 +10,14 @@ The `AbstractRepo` library provides a robust and flexible abstraction layer for 
 
 ## Key Features
 
-*   **CRUD Operations:** Comprehensive support for standard data manipulation operations.
-*   **Specifications Pattern:** A powerful and flexible mechanism for defining complex query criteria based on business rules, enabling highly customizable data retrieval.
-*   **Ordering Options:** Advanced sorting capabilities, including control over the placement of `NULL` values.
-*   **Pagination Support:** Efficient handling of large datasets through limit and offset-based pagination.
-*   **Strong Typing:** Leverages Python's type hinting for improved code readability, maintainability, and early error detection.
-*   **Extensibility:** Designed with extensibility in mind, allowing for easy integration with various database technologies and custom data sources.
-*   **In-Memory Implementation:** Includes a built-in list-based repository implementation, ideal for testing, development, and rapid prototyping.
-*   **Asynchronous Support:** Provides interfaces and base implementations for asynchronous repository operations, crucial for modern, high-performance applications.
+* **CRUD Operations:** Comprehensive support for standard data manipulation operations.
+* **Specifications Pattern:** A powerful and flexible mechanism for defining complex query criteria based on business rules, enabling highly customizable data retrieval.
+* **Ordering Options:** Advanced sorting capabilities, including control over the placement of `NULL` values.
+* **Pagination Support:** Efficient handling of large datasets through limit and offset-based pagination.
+* **Strong Typing:** Leverages Python's type hinting for improved code readability, maintainability, and early error detection.
+* **Extensibility:** Designed with extensibility in mind, allowing for easy integration with various database technologies and custom data sources.
+* **In-Memory Implementation:** Includes a built-in list-based repository implementation, ideal for testing, development, and rapid prototyping.
+* **Asynchronous Support:** Provides interfaces and base implementations for asynchronous repository operations, crucial for modern, high-performance applications.
 
 ## Installation
 
@@ -29,25 +29,25 @@ pip install abstractrepo
 
 ## Table of Contents
 
-- [Core Components and Usage](#core-components-and-usage)
-  - [Repository Interface (`CrudRepositoryInterface`)](#repository-interface-crudrepositoryinterface)
-  - [List-Based Implementation (`ListBasedCrudRepository`)](#list-based-implementation-listbasedcrudrepository)
-  - [Asynchronous Repositories (`AsyncCrudRepositoryInterface`)](#asynchronous-repositories)
-  - [Specifications](#specifications)
-  - [Ordering](#ordering)
-  - [Pagination](#pagination)
-  - [Exception Handling](#exception-handling)
-- [Examples](#examples)
-  - [Complete Synchronous Example](#complete-synchronous-example)
-  - [Complete Asynchronous Example](#complete-asynchronous-example)
-- [API Reference](#api-reference)
-  - [Repository Methods](#repository-methods)
-  - [Specification Types](#specification-types)
-  - [Ordering Options](#ordering-options)
-  - [Pagination Options](#pagination-options)
-- [Best Practices](#best-practices)
-- [Dependencies](#dependencies)
-- [License](#license)
+* [Core Components and Usage](#core-components-and-usage)
+  * [Repository Interface (`CrudRepositoryInterface`)](#repository-interface-crudrepositoryinterface)
+  * [List-Based Implementation (`ListBasedCrudRepository`)](#list-based-implementation-listbasedcrudrepository)
+  * [Asynchronous Repositories (`AsyncCrudRepositoryInterface`)](#asynchronous-repositories)
+  * [Specifications](#specifications)
+  * [Ordering](#ordering)
+  * [Pagination](#pagination)
+  * [Exception Handling](#exception-handling)
+* [Examples](#examples)
+  * [Complete Synchronous Example](#complete-synchronous-example)
+  * [Complete Asynchronous Example](#complete-asynchronous-example)
+* [API Reference](#api-reference)
+  * [Repository Methods](#repository-methods)
+  * [Specification Types](#specification-types)
+  * [Ordering Options](#ordering-options)
+  * [Pagination Options](#pagination-options)
+* [Best Practices](#best-practices)
+* [Dependencies](#dependencies)
+* [License](#license)
 
 ## Core Components and Usage
 
@@ -581,7 +581,7 @@ PagingOptions(
 ## Dependencies
 
 * Python 3.7+
-* `pydantic` (for data modeling, optional but recommended)
+* No external dependencies
 
 ## License
 
