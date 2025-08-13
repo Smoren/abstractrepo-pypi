@@ -1,39 +1,11 @@
 import abc
-from typing import Optional, List, Union, Type
+from typing import Optional, List, Type
 
 from abstractrepo.exceptions import ItemNotFoundException, UniqueViolationException
 from abstractrepo.specification import SpecificationInterface, Operator, AttributeSpecification
 from abstractrepo.repo import CrudRepositoryInterface, ListBasedCrudRepository, AsyncCrudRepositoryInterface, \
     AsyncListBasedCrudRepository
-
-
-class News:
-    id: int
-    title: str
-    text: Optional[str]
-
-    def __init__(self, id: int, title: str, text: Optional[str] = None):
-        self.id = id
-        self.title = title
-        self.text = text
-
-
-class NewsCreateForm:
-    title: str
-    text: Union[str, None]
-
-    def __init__(self, title: str, text: Optional[str] = None):
-        self.title = title
-        self.text = text
-
-
-class NewsUpdateForm:
-    title: str
-    text: str
-
-    def __init__(self, title: str, text: Optional[str] = None):
-        self.title = title
-        self.text = text
+from tests.fixtures.models import News, NewsCreateForm, NewsUpdateForm, User, UserCreateForm, UserUpdateForm
 
 
 class NewsRepositoryInterface(CrudRepositoryInterface[News, int, NewsCreateForm, NewsUpdateForm], abc.ABC):
@@ -41,6 +13,14 @@ class NewsRepositoryInterface(CrudRepositoryInterface[News, int, NewsCreateForm,
 
 
 class AsyncNewsRepositoryInterface(AsyncCrudRepositoryInterface[News, int, NewsCreateForm, NewsUpdateForm], abc.ABC):
+    pass
+
+
+class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):
+    pass
+
+
+class AsyncUserRepositoryInterface(AsyncCrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):
     pass
 
 
@@ -110,45 +90,6 @@ class AsyncListBasedNewsRepository(
 
     def _get_id_filter_specification(self, item_id: int) -> SpecificationInterface[News, bool]:
         return AttributeSpecification('id', item_id, Operator.E)
-
-
-class User:
-    id: int
-    username: str
-    password: str
-    display_name: str
-
-    def __init__(self, id: int, username: str, password: str, display_name: str):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.display_name = display_name
-
-
-class UserCreateForm:
-    username: str
-    password: str
-    display_name: str
-
-    def __init__(self, username: str, password: str, display_name: str):
-        self.username = username
-        self.password = password
-        self.display_name = display_name
-
-
-class UserUpdateForm:
-    display_name: str
-
-    def __init__(self, display_name: str):
-        self.display_name = display_name
-
-
-class UserRepositoryInterface(CrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):
-    pass
-
-
-class AsyncUserRepositoryInterface(AsyncCrudRepositoryInterface[User, int, UserCreateForm, UserUpdateForm], abc.ABC):
-    pass
 
 
 class ListBasedUserRepository(

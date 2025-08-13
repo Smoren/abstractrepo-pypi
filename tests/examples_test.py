@@ -5,8 +5,9 @@ from abstractrepo.specification import Operator, AttributeSpecification, AndSpec
 from abstractrepo.order import OrderDirection, OrderOptionsBuilder
 from abstractrepo.paging import PagingOptions, PageResolver
 
-from tests.fixtures.classes import ListBasedNewsRepository, NewsCreateForm, NewsUpdateForm, ListBasedUserRepository, \
-    UserCreateForm, AsyncListBasedNewsRepository, AsyncListBasedUserRepository
+from tests.fixtures.repo import (ListBasedNewsRepository, ListBasedUserRepository,
+                                 AsyncListBasedNewsRepository, AsyncListBasedUserRepository)
+from tests.fixtures.models import NewsCreateForm, NewsUpdateForm, UserCreateForm
 
 
 def test_news_repo():

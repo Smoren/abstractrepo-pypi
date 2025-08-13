@@ -1,7 +1,7 @@
 from typing import Generator, Tuple, List
 
 from abstractrepo.order import OrderOptions, OrderOptionsBuilder, OrderDirection, NonesOrder
-from tests.fixtures.classes import News
+from tests.fixtures.models import News
 
 
 def data_provider_for_news_order() -> Generator[Tuple[List[News], OrderOptions, List[News]], None, None]:

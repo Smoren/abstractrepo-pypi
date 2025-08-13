@@ -2,8 +2,9 @@ from typing import Generator, Tuple, List
 
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator, AndSpecification, \
     OrSpecification, NotSpecification
-from tests.fixtures.classes import News, ListBasedNewsRepository, NewsCreateForm, NewsRepositoryInterface, \
+from tests.fixtures.repo import ListBasedNewsRepository, NewsRepositoryInterface, \
     AsyncListBasedNewsRepository, AsyncNewsRepositoryInterface
+from tests.fixtures.models import News, NewsCreateForm
 
 
 def data_provider_for_news_repo(size: int, with_no_text_item: bool = False) -> Generator[NewsRepositoryInterface, None, None]:

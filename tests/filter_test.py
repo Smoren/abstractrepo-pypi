@@ -4,7 +4,8 @@ from typing import Tuple, List
 import pytest
 
 from abstractrepo.specification import SpecificationInterface, AttributeSpecification, Operator
-from tests.fixtures.classes import ListBasedNewsRepository, News, AsyncListBasedNewsRepository
+from tests.fixtures.models import News
+from tests.fixtures.repo import ListBasedNewsRepository, AsyncListBasedNewsRepository
 from tests.providers.filter import data_provider_for_news_filter, data_provider_for_news_repo, \
     data_provider_for_news_repo_async
 

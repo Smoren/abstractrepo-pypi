@@ -1,6 +1,6 @@
 from abstractrepo.exceptions import RelationViolationException, UniqueViolationException, ItemNotFoundException
 from abstractrepo.specification import AttributeSpecification
-from tests.fixtures.classes import User
+from tests.fixtures.models import User
 
 
 def test_item_not_found_exception():
