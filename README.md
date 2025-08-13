@@ -189,11 +189,6 @@ from typing import TypeVar
 from pydantic import BaseModel
 from abstractrepo.repo import AsyncCrudRepositoryInterface
 
-TModel = TypeVar("TModel")
-TIdValueType = TypeVar("TIdValueType")
-TCreateSchema = TypeVar("TCreateSchema")
-TUpdateSchema = TypeVar("TUpdateSchema")
-
 
 class User(BaseModel):
     id: int
