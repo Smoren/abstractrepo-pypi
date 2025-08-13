@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
 exclude_also = [
-    # Don't complain if tests don't hit defensive assertion code:
     "raise NotImplementedError",
-
-    # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
-
-    # Don't complain if non-runnable code isn't run:
+    "# pragma: no cover",
+]
+exclude_lines = [
+    "raise NotImplementedError",
+    "@(abc\\.)?abstractmethod",
     "# pragma: no cover",
 ]
