@@ -45,7 +45,7 @@ def test_filter_errors(repo: ListBasedNewsRepository):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("repo", data_provider_for_news_repo_async(100))
-async def test_filter_errors(repo: AsyncListBasedNewsRepository):
+async def test_filter_errors_async(repo: AsyncListBasedNewsRepository):
     with pytest.raises(ValueError):
         await repo.get_collection(AttributeSpecification('id', 12, Operator.IN))
 
