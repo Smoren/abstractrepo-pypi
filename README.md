@@ -20,6 +20,10 @@ The `AbstractRepo` library provides a robust and flexible abstraction layer for 
 * **In-Memory Implementation:** Includes a built-in list-based repository implementation, ideal for testing, development, and rapid prototyping.
 * **Asynchronous Support:** Provides interfaces and base implementations for asynchronous repository operations, crucial for modern, high-performance applications.
 
+## Implementations
+
+* [SQLAlchemy implementation](https://github.com/Smoren/abstractrepo-sqlalchemy-pypi)
+
 ## Installation
 
 To get started with `AbstractRepo`, install it using pip:
