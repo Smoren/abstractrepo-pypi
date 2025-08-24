@@ -23,6 +23,7 @@ The `AbstractRepo` library provides a robust and flexible abstraction layer for 
 ## Implementations
 
 * [SQLAlchemy implementation](https://github.com/Smoren/abstractrepo-sqlalchemy-pypi)
+* [List-based in-memory implementation](#list-based-implementation-listbasedcrudrepository)
 
 ## Installation
 
